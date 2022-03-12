@@ -25,7 +25,19 @@ const taskFormHandler = function(event) {
     type: taskTypeInput,
   };
 
-  createTaskEl(taskDataObj);
+  const isEdit = formEl.hasAttribute('data-task-id');
+
+  if (isEdit) {
+    const taskId = formEl.getAttribute('data-task-id');
+    completeEditTask(taskNameInput, taskTypeInput, taskId);
+  } else {
+    const taskDataObj = {
+      name: taskNameInput,
+      type: taskTypeInput
+    };
+
+    createTaskEl(taskDataObj);
+  }
 }
 
 const createTaskEl = function(taskDataObj) {
@@ -124,6 +136,20 @@ const editTask = function(taskId) {
 
   //save the id of the currently edited task so we can save those changes to the correct element
   formEl.setAttribute('data-task-id', taskId);
+}
+
+const completeEditTask = function(taskName, taskType, taskId) {
+  //finds matching task list item
+  const taskSelected = document.querySelector(`.task-item[data-task-id="${taskId}"]`);
+  
+  //updates values
+  taskSelected.querySelector("h3.task-name").textContent = taskName;
+  taskSelected.querySelector("span.task-type").textContent = taskType;
+
+  alert("Task Updated!");
+
+  formEl.removeAttribute('data-task-id');
+  document.querySelector('#save-task').textContent = "Add Task";
 }
 
 formEl.addEventListener("submit", taskFormHandler);
